@@ -19,9 +19,12 @@
   },
   "homepage": "https://github.com/aaronwolmutt/kafkajs-observability-api#readme",
   "devDependencies": {
+    "eslint": "^8.0.1",
+    "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.13"
   },
   "dependencies": {
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "kafkajs": "^1.15.0"
   }
