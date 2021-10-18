@@ -1,0 +1,28 @@
+{
+  "name": "kafkajs-observability-api",
+  "version": "1.0.0",
+  "description": "Free observability API (REST) for Kafka",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "startDev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronwolmutt/kafkajs-observability-api.git"
+  },
+  "author": "Aaron Wolmutt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aaronwolmutt/kafkajs-observability-api/issues"
+  },
+  "homepage": "https://github.com/aaronwolmutt/kafkajs-observability-api#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "kafkajs": "^1.15.0"
+  }
+}
