@@ -1,10 +1,10 @@
 import {adminApiV1} from './controllers/admin_api_v1';
 import express from 'express';
-import {Kafka} from 'kafkajs';
+import {Kafka, logLevel} from 'kafkajs';
 import {v4 as uuidv4} from 'uuid';
 const winston = require('winston');
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
   format: winston.format.simple(),
   transports: [
@@ -26,6 +26,8 @@ const kafkaConfig = {
   clientId: 'observability-api',
   brokers: process.env.BROKERS.split(','),
   ssl: process.env.SSL || false,
+  logLevel: process.env.NODE_ENV === 'production'?
+    logLevel.ERROR : logLevel.INFO,
 };
 
 if (process.env.SASL_MECH && process.env.USERNAME && process.env.PASSWORD) {
@@ -37,7 +39,9 @@ if (process.env.SASL_MECH && process.env.USERNAME && process.env.PASSWORD) {
   };
 }
 
-export const kafka = new Kafka(kafkaConfig);
+const kafka = new Kafka(kafkaConfig);
+export const admin = kafka.admin();
+
 export const app = express();
 const port = process.env.PORT || 3000;
 
