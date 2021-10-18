@@ -42,6 +42,16 @@ if (process.env.SASL_MECH && process.env.USERNAME && process.env.PASSWORD) {
 const kafka = new Kafka(kafkaConfig);
 export const admin = kafka.admin();
 
+logger.info('connecting admin client...');
+admin.connect().then(() => {
+  logger.info('succesfully established connection to cluster');
+}).catch((err) => {
+  logger.error(`couldn't establish connection to ${process.env.BROKERS}`);
+  logger.error(err);
+  logger.error('shutting down after unsuccesful connection...');
+  process.exit(1);
+});
+
 export const app = express();
 const port = process.env.PORT || 3000;
 
