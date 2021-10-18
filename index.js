@@ -4,11 +4,6 @@ import {Kafka} from 'kafkajs';
 import {v4 as uuidv4} from 'uuid';
 const winston = require('winston');
 
-if (!process.env.NODE_ENV) {
-  logger.error('NODE_ENV not set, exiting');
-  process.exit(1);
-}
-
 const logger = winston.createLogger({
   level: process.env.NODE_ENV === 'dev' ? 'debug' : 'info',
   format: winston.format.simple(),
@@ -17,13 +12,32 @@ const logger = winston.createLogger({
   ],
 });
 
-if (process.env.BROKERS) {
-  const kafka = new Kafka({
-    clientId: 'observability-js',
-    brokers: process.env.BROKERS.split(','),
-  });
+if (!process.env.NODE_ENV || process.env.BROKERS) {
+  logger.error('missing minimum configuration...');
+  logger.error('NODE_ENV and BROKERS not set, exiting');
+  process.exit(1);
 }
 
+if (process.env.NODE_ENV != 'production') {
+  require('dotenv').config();
+}
+
+const kafkaConfig = {
+  clientId: 'observability-api',
+  brokers: process.env.BROKERS.split(','),
+  ssl: process.env.SSL || false,
+};
+
+if (process.env.SASL_MECH && process.env.USERNAME && process.env.PASSWORD) {
+  logger.info('sasl auth configured in the environment');
+  kafkaConfig.sasl = {
+    mechanism: process.env.SASL_MECH || 'plain',
+    username: process.env.USERNAME,
+    password: process.env.PASSWORD,
+  };
+}
+
+export const kafka = new Kafka(kafkaConfig);
 export const app = express();
 const port = process.env.PORT || 3000;
 
