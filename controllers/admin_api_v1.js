@@ -31,3 +31,21 @@ adminApiV1.get('/cluster', async (req, res) => {
         return res.status(500).send();
       });
 });
+
+adminApiV1.post('/topics', async (req, res) => {
+  logger.info('Creating Kafka topics...');
+  logger.info(`User requested to create ${req.body.topics.length} topics`);
+  await admin.createTopics({
+    validateOnly: req.query.validateOnly || false,
+    waitForLeaders: req.query.waitForLeaders || false,
+    topics: req.body.topics,
+  }).then((succesful) => {
+    res.status(201).json({
+      message: 'successfully created topics',
+      topics: req.body.topics,
+    });
+  }).catch((err) => {
+    logger.error('error handled creating the topics');
+    res.status(500).json({message: err});
+  });
+});
